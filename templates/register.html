@@ -1,11 +1,36 @@
 {% extends "default.html" %}
 
 {% block content %}
-    <h1>Регистрация</h1>
-    <form method="post">
-        <div class="simple_inp"><input type="name" class="form-control" id="name" placeholder="Введите имя" name="name"></div>
-        <div class="simple_inp"><input type="password" class="form-control" id="password" placeholder="Введите пароль" name="password"></div>
-        <div class="simple_inp"><input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Введите адрес почты" name="email"></div>
-        <div><a class="begin_button"><span>Зарегистрироваться</span></a></div>
-    </form>
+<h1>Регистрация</h1>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.login.label }}<br>
+        {{ form.login(class="form-control") }}<br>
+        {% for error in form.login.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(class="form-control") }}<br>
+        {% for error in form.name.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password(class="form-control", type="password") }}<br>
+        {% for error in form.password.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
 {% endblock %}

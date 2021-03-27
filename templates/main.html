@@ -2,5 +2,9 @@
 
 {% block content %}
     <h1>Welcome in Chaty!</h1>
-    <h2>Authorized User: {{ user }}</h2>
+    {% if current_user.is_authenticated %}
+        <a>{{ current_user.name }}</a>
+    {% else %}
+        <a></a>
+    {% endif %}
 {% endblock %}
