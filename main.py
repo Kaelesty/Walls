@@ -1,6 +1,7 @@
 from flask import Flask, url_for, render_template
 from flask_login import LoginManager, login_user
 from werkzeug.utils import redirect
+from flask import request
 
 from data import db_session
 from data.login_form import LoginForm
@@ -59,7 +60,43 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', title='Авторизация', form=form)
+    return render_template('login.html', title='Авторизация', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'))
+
+
+@app.route('/')
+def render_main():
+    return render_template('main.html', _logo=url_for('static', filename=f'images/hat_logo.PNG'))
+
+
+@app.route('/register', methods=['POST', 'GET'])
+def reqister():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if form.password.data != form.password_again.data:
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Пароли не совпадают")
+        db_sess = db_session.create_session()
+        if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Такой пользователь уже есть")
+        user = User(
+            name=form.name.data,
+            email=form.email.data,
+            about=form.about.data
+        )
+        user.set_password(form.password.data)
+        db_sess.add(user)
+        db_sess.commit()
+        return redirect('/login')
+    return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route('/try_reg')
+def try_reg(form):
+    print(form)
+    return render_template('register.html', _logo=url_for('static', filename=f'images/hat_logo.PNG'))
 
 
 if __name__ == '__main__':

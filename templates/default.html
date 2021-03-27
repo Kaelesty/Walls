@@ -7,6 +7,14 @@
 <body>
  <form class="hat">
 	 <img src="{{ _logo }}" class="hat_logo">
+     {% if current_user.is_authenticated %}
+        <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+     {% else %}
+    <p>
+        <a class="auths" href="/register"><span>Зарегистрироваться</span></a>
+        <a class="auths" href="/login"><span>Войти</span></a>
+    </p>
+{% endif %}
  </form>
  <div class="page_content">
 	 {% block content %}{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "default.html" %}
+
+{% block content %}
+    <h1>Регистрация</h1>
+    <form method="post">
+        <div class="simple_inp"><input type="name" class="form-control" id="name" placeholder="Введите имя" name="name"></div>
+        <div class="simple_inp"><input type="password" class="form-control" id="password" placeholder="Введите пароль" name="password"></div>
+        <div class="simple_inp"><input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Введите адрес почты" name="email"></div>
+        <div><a class="begin_button"><span>Зарегистрироваться</span></a></div>
+    </form>
+{% endblock %}
