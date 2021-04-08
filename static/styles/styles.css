@@ -23,6 +23,12 @@ body{
     text-align: center;
     border-radius: 8px;
 }
+.selector{
+    margin-left: 10px;
+    margin-right: 1400px;
+    background: #535353;
+    border-radius: 8px;
+}
 .begin_button {
   background-color: #555555;
   border: none;

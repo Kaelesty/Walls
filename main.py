@@ -1,12 +1,16 @@
 from flask import Flask, url_for, render_template
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from werkzeug.utils import redirect
 from flask import request
 
 from data import db_session
 from forms.loginform import LoginForm
 from forms.registerform import RegisterForm
+from forms.newdialogueform import NewDialogueForm
+
 from data.users import User
+from data.messages import Message_l1
+from data.dialogues import Dialogue
 
 CRP_MOVE = 17
 
@@ -61,7 +65,7 @@ def login():
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', title='Авторизация', form=form)
+    return render_template('login.html', title='Авторизация', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'))
 
 
 @app.route('/')
@@ -77,7 +81,7 @@ def reqister():
         if db_sess.query(User).filter(User.login == form.login.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form,
-                                   message="Такой пользователь уже есть")
+                                   message="Такой пользователь уже есть", _logo=url_for('static', filename=f'images/hat_logo.PNG'))
         user = User(
             name=form.name.data,
             login=form.login.data,
@@ -86,14 +90,38 @@ def reqister():
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form)
+    return render_template('register.html', title='Регистрация', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'))
 
 
-@app.route('/try_reg')
-def try_reg(form):
-    print(form)
-    return render_template('register.html', _logo=url_for('static', filename=f'images/hat_logo.PNG'))
+@app.route('/new_dialogue', methods=['POST', 'GET'])
+def render_nd():
+    form = NewDialogueForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        query = db_sess.query(User).filter(User.name == form.name.data)
+        if query.first() and form.name.data != current_user.name:
+            dialogue = Dialogue()
+            dialogue.first_user_id = current_user.id
+            dialogue.second_user_id = query.first().id
+            db_sess.add(dialogue)
+            db_sess.commit()
+            return redirect('/')
+        else:
+            return render_template('new_dialogue_form.html', title='Новый диалог',
+                                   form=form, message="Пользователь не найден")
+    return render_template('new_dialogue_form.html', title='Новый диалог', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'))
 
+
+@app.route('/dialogues', methods=['POST', 'GET'])
+def render_dialogues():
+    return render_template('dialogues.html', title='Диалоги', _logo=url_for('static', filename=f'images/hat_logo.PNG'))
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/welcome")
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")

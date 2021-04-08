@@ -1,18 +1,17 @@
 import sqlalchemy
 from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
+from flask_login import UserMixin
 
 
-class Message(SqlAlchemyBase):
-    __tablename__ = 'messages'
+class Message_l1(SqlAlchemyBase, UserMixin):
+    __tablename__ = 'messages_l1'
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    text = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    user_id = sqlalchemy.Column(sqlalchemy.Integer, 
+    sender_id = sqlalchemy.Column(sqlalchemy.Integer, 
                                 sqlalchemy.ForeignKey("users.id"))
-    user = orm.relation('User')
+    sender = orm.relation('User')
 
-    chat_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                sqlalchemy.ForeignKey("chats.id"))
-    chat = orm.relation('Chat')
+    text = sqlalchemy.Column(sqlalchemy.String)
+

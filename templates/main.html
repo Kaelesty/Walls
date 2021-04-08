@@ -1,10 +1,12 @@
 {% extends "default.html" %}
 
 {% block content %}
-    <h1>Welcome in Chaty!</h1>
+    <h1>Рады вас видеть в Chaty, </h1>
     {% if current_user.is_authenticated %}
-        <a>{{ current_user.name }}</a>
+        <h2>{{ current_user.name }}</h2>
+        <a class="begin_button" href="/new_dialogue"><span>Начать диалог...</span></a>
+        <a class="begin_button" href="/"><span>Создать беседу...</span></a>
     {% else %}
-        <a></a>
+        <h2>Для работы в системе необходимо зарегистрироваться или войти ⮭</h2>
     {% endif %}
 {% endblock %}

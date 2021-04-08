@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>default_pattern</title>
+	<title>{{ title }}</title>
 	<link rel="stylesheet" href="static/styles/styles.css">
 </head>
 <body>
@@ -17,8 +17,11 @@
     </p>
 {% endif %}
  </form>
+ <div class="selector">
+    <h3>Выберите диалог</h3>
+ </div>
  <div class="page_content">
-	 {% block content %}{% endblock %}
+	 <br>
  </div>
 </body>
 </html>
