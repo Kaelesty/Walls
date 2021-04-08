@@ -9,9 +9,13 @@ class Message_l1(SqlAlchemyBase, UserMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    sender_id = sqlalchemy.Column(sqlalchemy.Integer, 
+    sender_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("users.id"))
     sender = orm.relation('User')
+
+    dialogue_id = sqlalchemy.Column(sqlalchemy.Integer,
+                                  sqlalchemy.ForeignKey("dialogues.id"))
+    dialogue = orm.relation('Dialogue')
 
     text = sqlalchemy.Column(sqlalchemy.String)
 

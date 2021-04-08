@@ -15,7 +15,8 @@ body{
 }
 .page_content{
 
-    display: block;
+    display:block;
+    float: center;
     margin-left: 400px;
     margin-right: 400px;
     margin-bottom: 5px;
@@ -23,8 +24,14 @@ body{
     text-align: center;
     border-radius: 8px;
 }
+.dialogues {
+
+}
 .selector{
     margin-left: 10px;
+    float: left;
+    width: 150px;
+    height: 100px
     margin-right: 1400px;
     background: #535353;
     border-radius: 8px;

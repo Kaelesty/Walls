@@ -8,7 +8,7 @@
  <form class="hat">
 	 <img src="{{ _logo }}" class="hat_logo">
      {% if current_user.is_authenticated %}
-        <a class="begin_button" href="/dialogues"><span>Диалоги</span></a>
+        <a class="begin_button" href="/dialogues_redirect"><span>Диалоги</span></a>
         <a class="begin_button" href="/logout"><span>Выйти</span></a>
      {% else %}
     <p>

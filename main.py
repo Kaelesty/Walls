@@ -112,9 +112,19 @@ def render_nd():
     return render_template('new_dialogue_form.html', title='Новый диалог', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'))
 
 
-@app.route('/dialogues', methods=['POST', 'GET'])
-def render_dialogues():
-    return render_template('dialogues.html', title='Диалоги', _logo=url_for('static', filename=f'images/hat_logo.PNG'))
+@app.route('/dialogues/<username>', methods=['POST', 'GET'])
+def render_dialogues(username):
+    db_sess = db_session.create_session()
+    comrade = db_sess.query(User).filter(User.name == username)
+    avaliable_dialogues = db_sess.query(Dialogue).filter((Dialogue.first_user == current_user) | (Dialogue.second_user == current_user))
+    messages = db_sess.query(Message_l1).filter(Message_l1.dialogue == avaliable_dialogues.first()).all()
+    return render_template('dialogues.html', title='Диалоги',
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'), dialogues=avaliable_dialogues.all(), messages=messages)
+
+
+
+
+
 
 
 @app.route('/logout')

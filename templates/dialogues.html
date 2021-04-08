@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>{{ title }}</title>
-	<link rel="stylesheet" href="static/styles/styles.css">
+	<link rel="stylesheet" href="/static/styles/styles.css">
 </head>
 <body>
  <form class="hat">
@@ -17,11 +17,24 @@
     </p>
 {% endif %}
  </form>
- <div class="selector">
-    <h3>Выберите диалог</h3>
- </div>
- <div class="page_content">
-	 <br>
+ <div class="dialogues">
+     <div class="selector">
+        <h3>Выберите диалог</h3>
+         {% for item in dialogues %}
+
+            {% if item.first_user == current_user %}
+                <div><a class="begin_button" href="/dialogues/{{ item.second_user.name }}"><span>{{ item.second_user.name }}</span></a></div>
+            {% else %}
+                <div><a class="begin_button" href="/dialogues/{{ item.first_user.name }}"><span>{{ item.first_user.name }}</span></a></div>
+     {% endif %}
+
+        {% endfor %}
+     </div>
+     <div class="page_content">
+         {% for item in messages %}
+            <p>{{ item.sender.name }} - {{  item.text }}</p>
+        {% endfor %}
+     </div>
  </div>
 </body>
 </html>
