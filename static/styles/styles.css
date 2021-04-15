@@ -24,17 +24,45 @@ body{
     text-align: center;
     border-radius: 8px;
 }
-.dialogues {
-
+.chat_area {
+    float: left;
+    margin-left: auto;
+    width: 500px;
+    overflow-y:scroll;
+    height: 600px;
+}
+.chat {
+    float: left;
+    margin-left: 450px;
+    padding: 20px;
+    padding-top: 5px;
+    border-radius: 8px;
+    size-x: 300px;
+    background: #656565;
+    border-radius : 5px;
+    margin-bottom: 5px;
+    height: 700px;
+}
+.chat-control {
+    margin-top: 5px;
+    padding-top: 5px;
+}
+.chat_input{
+    float: center;
+    width: 406px;
+    height: 40px;
+    border-radius: 8px;
 }
 .selector{
-    margin-left: 10px;
+    padding-top: 5px;
+    margin-left: 50px;
     float: left;
     width: 150px;
     height: 100px
     margin-right: 1400px;
     background: #535353;
     border-radius: 8px;
+    overflow-y:scroll;
 }
 .begin_button {
   background-color: #555555;

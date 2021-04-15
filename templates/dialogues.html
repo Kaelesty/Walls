@@ -3,6 +3,7 @@
 <head>
 	<title>{{ title }}</title>
 	<link rel="stylesheet" href="/static/styles/styles.css">
+    <meta http-equiv="refresh" content="10">
 </head>
 <body>
  <form class="hat">
@@ -30,11 +31,22 @@
 
         {% endfor %}
      </div>
-     <div class="page_content">
-         {% for item in messages %}
-            <p>{{ item.sender.name }} - {{  item.text }}</p>
-        {% endfor %}
+     <div class="chat">
+         <p>Переписка с "{{ comrade.name }}"</p>
+         <div class="chat_area">
+                 {% for item in messages %}
+                    <p>{{ item.sender.name }} - {{  item.text }}</p>
+                 {% endfor %}
+
+         </div>
+         <div class="chat-control">
+             <form action="" method="post" novalidate>
+             {{ form.hidden_tag() }}
+                    {{ form.text(class="chat_input") }}  {{ form.submit(type="submit", class="begin_button") }} </div>
+            </form>
+     </div>
      </div>
  </div>
 </body>
 </html>
+

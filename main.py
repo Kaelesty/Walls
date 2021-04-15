@@ -4,13 +4,17 @@ from werkzeug.utils import redirect
 from flask import request
 
 from data import db_session
+
 from forms.loginform import LoginForm
 from forms.registerform import RegisterForm
 from forms.newdialogueform import NewDialogueForm
+from forms.chatform import ChatForm
 
 from data.users import User
 from data.messages import Message_l1
 from data.dialogues import Dialogue
+
+from flask.json import jsonify
 
 CRP_MOVE = 17
 
@@ -115,11 +119,44 @@ def render_nd():
 @app.route('/dialogues/<username>', methods=['POST', 'GET'])
 def render_dialogues(username):
     db_sess = db_session.create_session()
-    comrade = db_sess.query(User).filter(User.name == username)
+    comrade = db_sess.query(User).filter(User.name == username).first()
     avaliable_dialogues = db_sess.query(Dialogue).filter((Dialogue.first_user == current_user) | (Dialogue.second_user == current_user))
-    messages = db_sess.query(Message_l1).filter(Message_l1.dialogue == avaliable_dialogues.first()).all()
+    for elem in avaliable_dialogues:
+        if (elem.first_user == current_user and elem.second_user == comrade) or \
+                (elem.second_user == current_user and elem.first_user == comrade):
+            current_dialogue = elem
+    form = ChatForm()
+    if form.validate_on_submit():
+        message = Message_l1()
+        message.text = form.text.data
+        message.sender_id = current_user.id
+        message.dialogue_id = current_dialogue.id
+        db_sess.add(message)
+        db_sess.commit()
+        messages = db_sess.query(Message_l1).filter(Message_l1.dialogue == current_dialogue).all()
+        form.text.data = ""
+        return render_template('dialogues.html', title='Диалоги',
+                               _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                               dialogues=avaliable_dialogues.all(), messages=messages, comrade=comrade, form=form)
+    messages = db_sess.query(Message_l1).filter(Message_l1.dialogue == current_dialogue).all()
     return render_template('dialogues.html', title='Диалоги',
-                           _logo=url_for('static', filename=f'images/hat_logo.PNG'), dialogues=avaliable_dialogues.all(), messages=messages)
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           dialogues=avaliable_dialogues.all(), messages=messages, comrade=comrade, form=form)
+
+
+
+
+
+@app.route('/dialogues_redirect', methods=['POST', 'GET'])
+def dialogues_redirect():
+    db_sess = db_session.create_session()
+    dialogue = db_sess.query(Dialogue).filter(
+        (Dialogue.first_user == current_user) | (Dialogue.second_user == current_user)).first()
+    if dialogue.first_user == current_user:
+        return redirect(f"/dialogues/{dialogue.second_user.name}")
+    else:
+        return redirect(f"/dialogues/{dialogue.first_user.name}")
+
 
 
 
