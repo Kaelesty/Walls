@@ -5,7 +5,7 @@
     {% if current_user.is_authenticated %}
         <h2>{{ current_user.name }}</h2>
         <a class="begin_button" href="/new_dialogue"><span>Начать диалог...</span></a>
-        <a class="begin_button" href="/"><span>Создать беседу...</span></a>
+        <a class="begin_button" href="/new_chat"><span>Создать беседу...</span></a>
     {% else %}
         <h2>Для работы в системе необходимо зарегистрироваться или войти ⮭</h2>
     {% endif %}

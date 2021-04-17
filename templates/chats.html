@@ -3,7 +3,7 @@
 <head>
 	<title>{{ title }}</title>
 	<link rel="stylesheet" href="/static/styles/styles.css">
-    <meta http-equiv="refresh" content="10">
+    <meta http-equiv="refresh" content="100">
 </head>
 <body>
  <form class="hat">
@@ -21,19 +21,14 @@
  </form>
  <div class="dialogues">
      <div class="selector">
-        <h3>Выберите диалог</h3>
-         {% for item in dialogues %}
-
-            {% if item.first_user == current_user %}
-                <div><a class="begin_button" href="/dialogues/{{ item.second_user.name }}"><span>{{ item.second_user.name }}</span></a></div>
-            {% else %}
-                <div><a class="begin_button" href="/dialogues/{{ item.first_user.name }}"><span>{{ item.first_user.name }}</span></a></div>
-     {% endif %}
-
+         <div><a class="begin_button" href="/chats/add_user/{{current_chat.name}}"><span>Добавить пользователя...</span></a></div>
+        <h3>Выберите чат</h3>
+         {% for item in chats %}
+                <div><a class="begin_button" href="/chats/{{ item.name }}"><span>{{ item.name }}</span></a></div>
         {% endfor %}
      </div>
      <div class="chat">
-         <p>Переписка с "{{ comrade.name }}"</p>
+         <p>Беседа "{{ current_chat.name }}"</p>
          <div class="chat_area">
                  {% for item in messages %}
                     <p>{{ item.sender.name }} - {{  item.text }}</p>

@@ -19,3 +19,19 @@ class Message_l1(SqlAlchemyBase, UserMixin):
 
     text = sqlalchemy.Column(sqlalchemy.String)
 
+
+class Message_l2(SqlAlchemyBase, UserMixin):
+    __tablename__ = 'messages_l2'
+
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    sender_id = sqlalchemy.Column(sqlalchemy.Integer,
+                                sqlalchemy.ForeignKey("users.id"))
+    sender = orm.relation('User')
+
+    chat_id = sqlalchemy.Column(sqlalchemy.Integer,
+                                  sqlalchemy.ForeignKey("chats.id"))
+    chat = orm.relation('Chat')
+
+    text = sqlalchemy.Column(sqlalchemy.String)
+

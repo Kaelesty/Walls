@@ -2,13 +2,14 @@
 <html>
 <head>
 	<title>default_pattern</title>
-	<link rel="stylesheet" href="static/styles/styles.css">
+	<link rel="stylesheet" href={{styles}}>
 </head>
 <body>
  <form class="hat">
 	 <img src="{{ _logo }}" class="hat_logo">
      {% if current_user.is_authenticated %}
         <a class="begin_button" href="/dialogues_redirect"><span>Диалоги</span></a>
+        <a class="begin_button" href="/chats_redirect"><span>Беседы</span></a>
         <a class="begin_button" href="/logout"><span>Выйти</span></a>
      {% else %}
     <p>
