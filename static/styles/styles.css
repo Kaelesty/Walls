@@ -1,14 +1,14 @@
 form.hat{
-	background-color: #505050;
+	background-color: #000000;
 	padding: 0;
 }
 body{
     font-family: Georgia, 'Century', Times, serif;
 	margin: auto;
-	background-color: #606060
+	background-color: #ffffff;
 }
 .hat_logo{
-    background-color: #505050;
+    background-color: #000000;
 	display: block;
     margin-left: auto;
     margin-right: auto;
@@ -21,7 +21,7 @@ body{
     margin-left: 400px;
     margin-right: 400px;
     margin-bottom: 5px;
-    background: #656565;
+    background: #ffffff;
     text-align: center;
     border-radius: 8px;
 }
@@ -31,15 +31,25 @@ body{
     width: 500px;
     overflow-y:scroll;
     height: 600px;
+    background: white;
+    padding-bottom: 5px;
+    margin-bottom: 5px
+    color: black;
+}
+.colorist{
+color: white;
+}
+.nickname{
+font: Georgia;
 }
 .chat {
     float: left;
-    margin-left: 450px;
+    margin-left: 370px;
     padding: 20px;
     padding-top: 5px;
     border-radius: 8px;
     size-x: 300px;
-    background: #656565;
+    background: black;
     border-radius : 5px;
     margin-bottom: 5px;
     height: 700px;
@@ -58,15 +68,16 @@ body{
     padding-top: 5px;
     margin-left: 50px;
     float: left;
-    width: 150px;
+    width: 170px;
     height: 100px
     margin-right: 1400px;
-    background: #535353;
+    background: black;
     border-radius: 8px;
     overflow-y:scroll;
+    overflow-x: hidden;
 }
-.begin_button {
-  background-color: #555555;
+.white_button {
+  background-color: #ffffff;
   border: none;
   color: black;
   padding: 15px 32px;
@@ -78,14 +89,14 @@ body{
   border-radius: 8px;
   transition: all 0.5s;
 }
-.begin_button span {
+.white_button span {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
 
-.begin_button span:after {
+.white_button span:after {
   content: '\00bb';
   position: absolute;
   opacity: 0;
@@ -94,38 +105,43 @@ body{
   transition: 0.5s;
 }
 
-.begin_button:hover span {
+.white_button:hover span {
   padding-right: 25px;
 }
 
-.begin_button:hover span:after {
+.white_button:hover span:after {
   opacity: 1;
   right: 0;
 }
 
-.auths {
-  background-color: #555555;
+.form-control{
+border-color: black;
+height: 25px;
+width: 200px;
+border-radius: 8px;
+}
+
+.black_button {
+  color: white;
+  background-color: #000000;
   border: none;
-  color: black;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
   margin-bottom: 5px;
-  position: relative;
-  left: 81%;
   border-radius: 8px;
   transition: all 0.5s;
 }
-.auths span {
+.black_button span {
   cursor: pointer;
   display: inline-block;
   position: relative;
   transition: 0.5s;
 }
 
-.auths span:after {
+.black_button span:after {
   content: '\00bb';
   position: absolute;
   opacity: 0;
@@ -134,11 +150,11 @@ body{
   transition: 0.5s;
 }
 
-.auths:hover span {
+.black_button:hover span {
   padding-right: 25px;
 }
 
-.auths:hover span:after {
+.black_button:hover span:after {
   opacity: 1;
   right: 0;
 }

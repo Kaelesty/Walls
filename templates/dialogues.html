@@ -9,41 +9,41 @@
  <form class="hat">
 	 <img src="{{ _logo }}" class="hat_logo">
      {% if current_user.is_authenticated %}
-        <a class="begin_button" href="/dialogues_redirect"><span>Диалоги</span></a>
-        <a class="begin_button" href="/chats_redirect"><span>Беседы</span></a>
-        <a class="begin_button" href="/logout"><span>Выйти</span></a>
+        <a class="white_button" href="/"><span>Домой</span></a>
+        <a class="white_button" href="/dialogues_redirect"><span>Диалоги</span></a>
+        <a class="white_button" href="/chats_redirect"><span>Беседы</span></a>
+        <a class="white_button" href="/logout"><span>Выйти</span></a>
      {% else %}
     <p>
-        <a class="auths" href="/register"><span>Зарегистрироваться</span></a>
-        <a class="auths" href="/login"><span>Войти</span></a>
+        <a class="black_button" href="/register"><span>Зарегистрироваться</span></a>
+        <a class="black_button" href="/login"><span>Войти</span></a>
     </p>
 {% endif %}
  </form>
  <div class="dialogues">
      <div class="selector">
-        <h3>Выберите диалог</h3>
+        <h4 class="colorist">Выберите диалог</h4>
          {% for item in dialogues %}
 
             {% if item.first_user == current_user %}
-                <div><a class="begin_button" href="/dialogues/{{ item.second_user.name }}"><span>{{ item.second_user.name }}</span></a></div>
+                <div><a class="white_button" href="/dialogues/{{ item.second_user.name }}"><span>{{ item.second_user.name }}</span></a></div>
             {% else %}
-                <div><a class="begin_button" href="/dialogues/{{ item.first_user.name }}"><span>{{ item.first_user.name }}</span></a></div>
+                <div><a class="white_button" href="/dialogues/{{ item.first_user.name }}"><span>{{ item.first_user.name }}</span></a></div>
      {% endif %}
 
         {% endfor %}
      </div>
      <div class="chat">
-         <p>Переписка с "{{ comrade.name }}"</p>
+         <h4 class="colorist">Переписка с "{{ comrade.name }}"</h4>
          <div class="chat_area">
                  {% for item in messages %}
-                    <p>{{ item.sender.name }} - {{  item.text }}</p>
+                    <p class="nickname">[{{ item.sender.name }}] - {{  item.text }}</p>
                  {% endfor %}
-
          </div>
          <div class="chat-control">
              <form action="" method="post" novalidate>
              {{ form.hidden_tag() }}
-                    {{ form.text(class="chat_input") }}  {{ form.submit(type="submit", class="begin_button") }} </div>
+                    {{ form.text(class="chat_input") }}  {{ form.submit(type="submit", class="white_button") }} </div>
             </form>
      </div>
      </div>

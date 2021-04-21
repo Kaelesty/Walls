@@ -19,6 +19,8 @@ class Message_l1(SqlAlchemyBase, UserMixin):
 
     text = sqlalchemy.Column(sqlalchemy.String)
 
+    file = sqlalchemy.Column(sqlalchemy.String)
+
 
 class Message_l2(SqlAlchemyBase, UserMixin):
     __tablename__ = 'messages_l2'
@@ -34,4 +36,6 @@ class Message_l2(SqlAlchemyBase, UserMixin):
     chat = orm.relation('Chat')
 
     text = sqlalchemy.Column(sqlalchemy.String)
+
+    file = sqlalchemy.Column(sqlalchemy.String)
 

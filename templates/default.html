@@ -8,13 +8,14 @@
  <form class="hat">
 	 <img src="{{ _logo }}" class="hat_logo">
      {% if current_user.is_authenticated %}
-        <a class="begin_button" href="/dialogues_redirect"><span>Диалоги</span></a>
-        <a class="begin_button" href="/chats_redirect"><span>Беседы</span></a>
-        <a class="begin_button" href="/logout"><span>Выйти</span></a>
+        <a class="white_button" href="/"><span>Домой</span></a>
+        <a class="white_button" href="/dialogues_redirect"><span>Диалоги</span></a>
+        <a class="white_button" href="/chats_redirect"><span>Беседы</span></a>
+        <a class="white_button" href="/logout"><span>Выйти</span></a>
      {% else %}
     <p>
-        <a class="auths" href="/register"><span>Зарегистрироваться</span></a>
-        <a class="auths" href="/login"><span>Войти</span></a>
+        <a class="white_button" href="/register"><span>Зарегистрироваться</span></a>
+        <a class="white_button" href="/login"><span>Войти</span></a>
     </p>
 {% endif %}
  </form>

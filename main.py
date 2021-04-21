@@ -1,7 +1,6 @@
 from flask import Flask, url_for, render_template
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from werkzeug.utils import redirect
-from flask import request
 
 from data import db_session
 
@@ -17,7 +16,6 @@ from data.messages import Message_l1, Message_l2
 from data.dialogues import Dialogue
 from data.chats import Chat
 
-from flask.json import jsonify
 
 CRP_MOVE = 17
 
@@ -71,7 +69,7 @@ def login():
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
-                               form=form)
+                               form=form, styles=url_for('static', filename='styles/styles.css'))
     return render_template('login.html', title='Авторизация', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
 
 
@@ -170,8 +168,9 @@ def render_dialogues(username):
 @app.route('/chats/<chatname>', methods=['POST', 'GET'])
 def render_chats(chatname):
     db_sess = db_session.create_session()
-    avaliable_dialogues = db_sess.query(Chat).filter(Chat.users.like(f"% {current_user.id} %"))
-    current_dialogue = db_sess.query(Chat).filter(Chat.name == chatname).first()
+    avaliable_dialogues = db_sess.query(Chat).filter(
+        (Chat.users.like(f"% {current_user.id} %") | (Chat.creator_id == current_user.id)))
+    current_dialogue = db_sess.query(Chat).filter((Chat.name == chatname)).first()
     form = ChatForm()
     if form.validate_on_submit():
         message = Message_l2()
@@ -186,6 +185,7 @@ def render_chats(chatname):
                                _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'),
                                chats=avaliable_dialogues.all(), messages=messages, form=form, current_chat=current_dialogue)
     messages = db_sess.query(Message_l2).filter(Message_l2.chat == current_dialogue).all()
+    print(avaliable_dialogues.all())
     return render_template('chats.html', title='Диалоги',
                            _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'),
                            chats=avaliable_dialogues.all(), messages=messages, form=form, current_chat=current_dialogue)
@@ -206,7 +206,6 @@ def render_add_user(chatname):
             return render_template('new_dialogue_form.html', title='Добавление пользователя', form=form,
                                    _logo=url_for('static', filename=f'images/hat_logo.PNG'),
                                    styles=url_for('static', filename='styles/styles.css'), message="Ошибка при добавлении")
-    print(url_for('static', filename='styles/styles.css'))
     return render_template('new_dialogue_form.html', title='Добавление пользователя', form=form,
                            _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
 
@@ -216,7 +215,9 @@ def dialogues_redirect():
     db_sess = db_session.create_session()
     dialogue = db_sess.query(Dialogue).filter(
         (Dialogue.first_user == current_user) | (Dialogue.second_user == current_user)).first()
-    if dialogue.first_user == current_user:
+    if dialogue is None:
+        return redirect("/new_dialogue")
+    elif dialogue.first_user == current_user:
         return redirect(f"/dialogues/{dialogue.second_user.name}")
     else:
         return redirect(f"/dialogues/{dialogue.first_user.name}")
@@ -226,6 +227,8 @@ def dialogues_redirect():
 def chats_redirect():
     db_sess = db_session.create_session()
     chat = db_sess.query(Chat).filter((Chat.creator_id == current_user.id) | Chat.users.like(f" %{current_user.id}% ")).first()
+    if chat is None:
+        return redirect("/new_chat")
     return redirect(f"/chats/{chat.name}")
 
 
