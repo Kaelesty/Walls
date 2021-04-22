@@ -16,8 +16,6 @@ from data.messages import Message_l1, Message_l2
 from data.dialogues import Dialogue
 from data.chats import Chat
 
-import json
-
 
 app = Flask(__name__)
 app.secret_key = "secret"
@@ -27,12 +25,14 @@ login_manager.init_app(app)
 
 @app.route("/default_pattern")
 def render_default():
-    return render_template('default.html', _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+    return render_template('default.html', _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route("/welcome")
 def render_welcome():
-    return render_template('welcome.html', _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+    return render_template('welcome.html', _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'))
 
 
 @login_manager.user_loader
@@ -53,13 +53,19 @@ def login():
                 return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
-                               form=form, styles=url_for('static', filename='styles/styles.css'), _logo=url_for('static', filename=f'images/hat_logo.PNG'))
-    return render_template('login.html', title='Авторизация', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+                               form=form, styles=url_for('static', filename='styles/styles.css'),
+                               _logo=url_for('static', filename=f'images/hat_logo.PNG'))
+    return render_template('login.html',
+                           title='Авторизация', form=form,
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route('/')
 def render_main():
-    return render_template('main.html', _logo=url_for('static', title="ChatY", filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+    return render_template('main.html', _logo=url_for('static', title="ChatY",
+                                                      filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -70,7 +76,9 @@ def reqister():
         if db_sess.query(User).filter(User.login == form.login.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form,
-                                   message="Такой пользователь уже есть", _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+                                   message="Такой пользователь уже есть",
+                                   _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                                   styles=url_for('static', filename='styles/styles.css'))
         user = User()
         user.name = form.name.data
         user.login = form.login.data
@@ -78,7 +86,11 @@ def reqister():
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
-    return render_template('register.html', title='Регистрация', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+    return render_template('register.html',
+                           title='Регистрация',
+                           form=form,
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route('/new_dialogue', methods=['POST', 'GET'])
@@ -96,8 +108,14 @@ def render_nd():
             return redirect('/')
         else:
             return render_template('new_dialogue_form.html', title='Новый диалог',
-                                   form=form, message="Пользователь не найден", styles=url_for('static', filename='styles/styles.css'), _logo=url_for('static', filename=f'images/hat_logo.PNG'))
-    return render_template('new_dialogue_form.html', title='Новый диалог', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+                                   form=form, message="Пользователь не найден",
+                                   styles=url_for('static', filename='styles/styles.css'),
+                                   _logo=url_for('static', filename=f'images/hat_logo.PNG'))
+    return render_template('new_dialogue_form.html',
+                           title='Новый диалог',
+                           form=form,
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route('/new_chat', methods=['POST', 'GET'])
@@ -116,15 +134,24 @@ def render_nc():
             return redirect('/')
         else:
             return render_template('new_dialogue_form.html', title='Новый диалог',
-                                   form=form, message="Название уже занято", styles=url_for('static', filename='styles/styles.css'), _logo=url_for('static', filename=f'images/hat_logo.PNG'))
-    return render_template('new_dialogue_form.html', title='Новый диалог', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+                                   form=form,
+                                   message="Название уже занято",
+                                   styles=url_for('static', filename='styles/styles.css'),
+                                   _logo=url_for('static', filename=f'images/hat_logo.PNG'))
+    return render_template('new_dialogue_form.html',
+                           title='Новый диалог',
+                           form=form,
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route('/dialogues/<username>', methods=['POST', 'GET'])
 def render_dialogues(username):
+    current_dialogue = Dialogue()
     db_sess = db_session.create_session()
     comrade = db_sess.query(User).filter(User.name == username).first()
-    avaliable_dialogues = db_sess.query(Dialogue).filter((Dialogue.first_user == current_user) | (Dialogue.second_user == current_user))
+    avaliable_dialogues = db_sess.query(Dialogue).filter(
+        (Dialogue.first_user == current_user) | (Dialogue.second_user == current_user))
     for elem in avaliable_dialogues:
         if (elem.first_user == current_user and elem.second_user == comrade) or \
                 (elem.second_user == current_user and elem.first_user == comrade):
@@ -140,11 +167,13 @@ def render_dialogues(username):
         messages = db_sess.query(Message_l1).filter(Message_l1.dialogue == current_dialogue).all()
         form.text.data = ""
         return render_template('dialogues.html', title='Диалоги',
-                               _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'),
+                               _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                               styles=url_for('static', filename='styles/styles.css'),
                                dialogues=avaliable_dialogues.all(), messages=messages, comrade=comrade, form=form)
     messages = db_sess.query(Message_l1).filter(Message_l1.dialogue == current_dialogue).all()
     return render_template('dialogues.html', title='Диалоги',
-                           _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'),
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'),
                            dialogues=avaliable_dialogues.all(), messages=messages, comrade=comrade, form=form)
 
 
@@ -165,11 +194,14 @@ def render_chats(chatname):
         messages = db_sess.query(Message_l2).filter(Message_l2.chat == current_dialogue).all()
         form.text.data = ""
         return render_template('chats.html', title='Диалоги',
-                               _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'),
-                               chats=avaliable_dialogues.all(), messages=messages, form=form, current_chat=current_dialogue)
+                               _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                               styles=url_for('static', filename='styles/styles.css'),
+                               chats=avaliable_dialogues.all(),
+                               messages=messages, form=form, current_chat=current_dialogue)
     messages = db_sess.query(Message_l2).filter(Message_l2.chat == current_dialogue).all()
     return render_template('chats.html', title='Диалоги',
-                           _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'),
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'),
                            chats=avaliable_dialogues.all(), messages=messages, form=form, current_chat=current_dialogue)
 
 
@@ -187,9 +219,11 @@ def render_add_user(chatname):
         else:
             return render_template('new_dialogue_form.html', title='Добавление пользователя', form=form,
                                    _logo=url_for('static', filename=f'images/hat_logo.PNG'),
-                                   styles=url_for('static', filename='styles/styles.css'), message="Ошибка при добавлении")
+                                   styles=url_for('static', filename='styles/styles.css'),
+                                   message="Ошибка при добавлении")
     return render_template('new_dialogue_form.html', title='Добавление пользователя', form=form,
-                           _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+                           _logo=url_for('static', filename=f'images/hat_logo.PNG'),
+                           styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route('/dialogues_redirect', methods=['POST', 'GET'])
@@ -208,7 +242,8 @@ def dialogues_redirect():
 @app.route('/chats_redirect', methods=['POST', 'GET'])
 def chats_redirect():
     db_sess = db_session.create_session()
-    chat = db_sess.query(Chat).filter((Chat.creator_id == current_user.id) | Chat.users.like(f" %{current_user.id}% ")).first()
+    chat = db_sess.query(Chat).filter(
+        (Chat.creator_id == current_user.id) | Chat.users.like(f" %{current_user.id}% ")).first()
     if chat is None:
         return redirect("/new_chat")
     return redirect(f"/chats/{chat.name}")
@@ -229,13 +264,13 @@ def api_get(user, content):
     :return: json with main key "result", contains user_login, user_name and "content"
             (type of error or list with requested content)
     """
-    login, password = user.split("&")[0], user.split("&")[1]
+    req_login, password = user.split("&")[0], user.split("&")[1]
     result = {}
     db_sess = db_session.create_session()
-    user = db_sess.query(User).filter(User.login == login).first()
+    user = db_sess.query(User).filter(User.login == req_login).first()
     if not user:
         result["result"] = {
-            "user_login": login,
+            "user_login": req_login,
             "user_name": "",
             "content": ["ERROR - WRONG USER"]
         }
@@ -263,7 +298,7 @@ def api_get(user, content):
         return result
     else:
         result["result"] = {
-            "user_login": login,
+            "user_login": req_login,
             "user_name": "",
             "content": ["ERROR - WRONG PASSWORD"]
         }
@@ -279,16 +314,16 @@ def api_post(user, content_type, content):
         FOR message_l1: dialogue_id&text (Example: 32%TEXT~TEST)
         FOR message_l2: chat_id&text (Example: 32%TEXT~TEST)
         !!WARN!! ~ MUST used as SPACES. During posting it will be automatically replaced
-    :return: json with main key "result", contains user_login, user_name and "content" (type of error or success message)
+    :return: json with main key "result", contains user_login, user_name and "content"(type of error or success message)
     """
-    login, password = user.split("&")[0], user.split("&")[1]
+    req_login, password = user.split("&")[0], user.split("&")[1]
     dialogue_id, text = content.split("&")[0], content.split("&")[1]
     result = {}
     db_sess = db_session.create_session()
-    user = db_sess.query(User).filter(User.login == login).first()
+    user = db_sess.query(User).filter(User.login == req_login).first()
     if not user:
         result["result"] = {
-            "user_login": login,
+            "user_login": req_login,
             "user_name": "",
             "content": ["ERROR - WRONG USER"]
         }
@@ -331,11 +366,12 @@ def api_post(user, content_type, content):
             return result
     else:
         result["result"] = {
-            "user_login": login,
+            "user_login": req_login,
             "user_name": "",
             "content": ["ERROR - WRONG PASSWORD"]
         }
         return result
+
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")

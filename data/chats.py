@@ -3,7 +3,6 @@ from .db_session import SqlAlchemyBase
 from sqlalchemy import orm
 
 
-
 class Chat(SqlAlchemyBase):
     __tablename__ = 'chats'
 
@@ -11,7 +10,7 @@ class Chat(SqlAlchemyBase):
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String)
     creator_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                sqlalchemy.ForeignKey("users.id"))
+                                   sqlalchemy.ForeignKey("users.id"))
     creator = orm.relation('User', foreign_keys=[creator_id])
 
     users = sqlalchemy.Column(sqlalchemy.String)
@@ -23,4 +22,3 @@ class Chat(SqlAlchemyBase):
             "creator_id": self.creator_id,
             "users": self.users
         }
-

@@ -10,11 +10,11 @@ class Message_l1(SqlAlchemyBase, UserMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     sender_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                sqlalchemy.ForeignKey("users.id"))
+                                  sqlalchemy.ForeignKey("users.id"))
     sender = orm.relation('User')
 
     dialogue_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                  sqlalchemy.ForeignKey("dialogues.id"))
+                                    sqlalchemy.ForeignKey("dialogues.id"))
     dialogue = orm.relation('Dialogue')
 
     text = sqlalchemy.Column(sqlalchemy.String)
@@ -28,11 +28,11 @@ class Message_l2(SqlAlchemyBase, UserMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     sender_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                sqlalchemy.ForeignKey("users.id"))
+                                  sqlalchemy.ForeignKey("users.id"))
     sender = orm.relation('User')
 
     chat_id = sqlalchemy.Column(sqlalchemy.Integer,
-                                  sqlalchemy.ForeignKey("chats.id"))
+                                sqlalchemy.ForeignKey("chats.id"))
     chat = orm.relation('Chat')
 
     text = sqlalchemy.Column(sqlalchemy.String)

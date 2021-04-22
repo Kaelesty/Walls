@@ -8,8 +8,6 @@ import requests
 
 ADDRESS = "127.0.0.1:8080"
 
-
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--login")
 parser.add_argument("--password")
