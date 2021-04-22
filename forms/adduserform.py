@@ -4,5 +4,5 @@ from wtforms.validators import DataRequired
 
 
 class UserForm(FlaskForm):
-    name = StringField('Логин', validators=[DataRequired()])
-    submit = SubmitField('Войти')
+    name = StringField('Имя пользователя', validators=[DataRequired()])
+    submit = SubmitField('Готово')

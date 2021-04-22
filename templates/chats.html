@@ -3,7 +3,7 @@
 <head>
 	<title>{{ title }}</title>
 	<link rel="stylesheet" href="/static/styles/styles.css">
-    <meta http-equiv="refresh" content="100">
+    <meta http-equiv="refresh" content="15">
 </head>
 <body>
  <form class="hat">
@@ -22,7 +22,7 @@
  </form>
  <div class="dialogues">
      <div class="selector">
-         <div><a class="black_button" href="/chats/add_user/{{current_chat.name}}"><span>Добавить пользователя...</span></a></div>
+         <div><a class="white_button" href="/chats/add_user/{{current_chat.name}}"><span>Добавить пользователя...</span></a></div>
         <h4 class="colorist">Выберите чат</h4>
          {% for item in chats %}
                 <div><a class="white_button" href="/chats/{{ item.name }}"><span>{{ item.name }}</span></a></div>

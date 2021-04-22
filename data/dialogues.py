@@ -17,3 +17,11 @@ class Dialogue(SqlAlchemyBase):
                                    sqlalchemy.ForeignKey("users.id"))
     second_user = orm.relation('User', foreign_keys=[second_user_id])
 
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "first_user_id": self.first_user_id,
+            "second_user_id": self.second_user_id
+        }
+

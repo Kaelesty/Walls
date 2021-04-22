@@ -16,3 +16,11 @@ class Chat(SqlAlchemyBase):
 
     users = sqlalchemy.Column(sqlalchemy.String)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "creator_id": self.creator_id,
+            "users": self.users
+        }
+

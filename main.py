@@ -16,24 +16,7 @@ from data.messages import Message_l1, Message_l2
 from data.dialogues import Dialogue
 from data.chats import Chat
 
-
-CRP_MOVE = 17
-
-
-def encrypt(string):
-    string = list(string)
-    res = ""
-    for i in range(len(string)):
-        res += chr(ord(string[i]) + i - CRP_MOVE)
-    return res
-
-
-def decrypt(string):
-    string = list(string)
-    res = ""
-    for i in range(len(string)):
-        res += chr(ord(string[i]) - i + CRP_MOVE)
-    return res
+import json
 
 
 app = Flask(__name__)
@@ -65,17 +48,18 @@ def login():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.login == form.login.data).first()
         if user and form.password.data:
-            login_user(user, remember=form.remember_me.data)
-            return redirect("/")
+            if user.check_password(form.password.data):
+                login_user(user, remember=form.remember_me.data)
+                return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
-                               form=form, styles=url_for('static', filename='styles/styles.css'))
+                               form=form, styles=url_for('static', filename='styles/styles.css'), _logo=url_for('static', filename=f'images/hat_logo.PNG'))
     return render_template('login.html', title='Авторизация', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route('/')
 def render_main():
-    return render_template('main.html', _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
+    return render_template('main.html', _logo=url_for('static', title="ChatY", filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
 
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -87,11 +71,10 @@ def reqister():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть", _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
-        user = User(
-            name=form.name.data,
-            login=form.login.data,
-            hashed_password=form.password.data,
-        )
+        user = User()
+        user.name = form.name.data
+        user.login = form.login.data
+        user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
@@ -113,7 +96,7 @@ def render_nd():
             return redirect('/')
         else:
             return render_template('new_dialogue_form.html', title='Новый диалог',
-                                   form=form, message="Пользователь не найден")
+                                   form=form, message="Пользователь не найден", styles=url_for('static', filename='styles/styles.css'), _logo=url_for('static', filename=f'images/hat_logo.PNG'))
     return render_template('new_dialogue_form.html', title='Новый диалог', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
 
 
@@ -133,7 +116,7 @@ def render_nc():
             return redirect('/')
         else:
             return render_template('new_dialogue_form.html', title='Новый диалог',
-                                   form=form, message="Название уже занято")
+                                   form=form, message="Название уже занято", styles=url_for('static', filename='styles/styles.css'), _logo=url_for('static', filename=f'images/hat_logo.PNG'))
     return render_template('new_dialogue_form.html', title='Новый диалог', form=form, _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'))
 
 
@@ -185,7 +168,6 @@ def render_chats(chatname):
                                _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'),
                                chats=avaliable_dialogues.all(), messages=messages, form=form, current_chat=current_dialogue)
     messages = db_sess.query(Message_l2).filter(Message_l2.chat == current_dialogue).all()
-    print(avaliable_dialogues.all())
     return render_template('chats.html', title='Диалоги',
                            _logo=url_for('static', filename=f'images/hat_logo.PNG'), styles=url_for('static', filename='styles/styles.css'),
                            chats=avaliable_dialogues.all(), messages=messages, form=form, current_chat=current_dialogue)
@@ -238,6 +220,122 @@ def logout():
     logout_user()
     return redirect("/welcome")
 
+
+@app.route("/api/get/<user>/<content>", methods=['GET'])
+def api_get(user, content):
+    """
+    :param user: login&pass (Example: /kayris&123/)
+    :param content: content_type (dialogues, chats) (Example: /dialogues)
+    :return: json with main key "result", contains user_login, user_name and "content"
+            (type of error or list with requested content)
+    """
+    login, password = user.split("&")[0], user.split("&")[1]
+    result = {}
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.login == login).first()
+    if not user:
+        result["result"] = {
+            "user_login": login,
+            "user_name": "",
+            "content": ["ERROR - WRONG USER"]
+        }
+        return result
+    if user.check_password(password):
+        result["result"] = {
+            "user_login": user.login,
+            "user_name": user.name,
+            "user_id": user.id,
+            "content": []
+        }
+        if content == "dialogues":
+            dialogues = db_sess.query(Dialogue).filter(
+                (Dialogue.first_user_id == user.id) | (Dialogue.second_user_id == user.id)).all()
+            for i in range(len(dialogues)):
+                dialogues[i] = dialogues[i].to_dict()
+            result["result"]["content"] = dialogues
+        elif content == "chats":
+            chats = db_sess.query(Chat).filter(Chat.users.like(f"% {user.id} %") | (Chat.creator_id == user.id)).all()
+            for i in range(len(chats)):
+                chats[i] = chats[i].to_dict()
+            result["result"]["content"] = chats
+        else:
+            result["result"]["content"] = ["ERROR - WRONG CONTENT"]
+        return result
+    else:
+        result["result"] = {
+            "user_login": login,
+            "user_name": "",
+            "content": ["ERROR - WRONG PASSWORD"]
+        }
+        return result
+
+
+@app.route("/api/post/<user>/<content_type>/<content>", methods=['POST', "GET"])
+def api_post(user, content_type, content):
+    """
+    :param user: login&pass (Example: /kayris&123/)
+    :param content_type: type of posting content (message_l1, message_l2)
+    :param content:
+        FOR message_l1: dialogue_id&text (Example: 32%TEXT~TEST)
+        FOR message_l2: chat_id&text (Example: 32%TEXT~TEST)
+        !!WARN!! ~ MUST used as SPACES. During posting it will be automatically replaced
+    :return: json with main key "result", contains user_login, user_name and "content" (type of error or success message)
+    """
+    login, password = user.split("&")[0], user.split("&")[1]
+    dialogue_id, text = content.split("&")[0], content.split("&")[1]
+    result = {}
+    db_sess = db_session.create_session()
+    user = db_sess.query(User).filter(User.login == login).first()
+    if not user:
+        result["result"] = {
+            "user_login": login,
+            "user_name": "",
+            "content": ["ERROR - WRONG USER"]
+        }
+        return result
+    if user.check_password(password):
+        result["result"] = {
+            "user_login": user.login,
+            "user_name": user.name,
+            "user_id": user.id,
+            "content": []
+        }
+        if content_type == "message_l1":
+            dialogue = db_sess.query(Dialogue).filter(Dialogue.id == dialogue_id).first()
+            if not dialogue:
+                result["result"]["content"] = ["ERROR - DIALOGUE NOT FOUND"]
+                return result
+            message = Message_l1()
+            message.sender_id = user.id
+            message.dialogue_id = dialogue.id
+            message.text = " ".join(text.split("~"))
+            db_sess.add(message)
+            db_sess.commit()
+            result["result"]["content"] = ["SUCCESS"]
+            return result
+        elif content_type == "message_l1":
+            dialogue = db_sess.query(Chat).filter(Chat.id == dialogue_id).first()
+            if not dialogue:
+                result["result"]["content"] = ["ERROR - DIALOGUE NOT FOUND"]
+                return result
+            message = Message_l2()
+            message.sender_id = user.id
+            message.chat_id = dialogue.id
+            message.text = " ".join(text.split("~"))
+            db_sess.add(message)
+            db_sess.commit()
+            result["result"]["content"] = ["SUCCESS"]
+            return result
+        else:
+            result["result"]["content"] = ["ERROR - WRONG CONTENT_TYPE"]
+            return result
+    else:
+        result["result"] = {
+            "user_login": login,
+            "user_name": "",
+            "content": ["ERROR - WRONG PASSWORD"]
+        }
+        return result
 
 if __name__ == '__main__':
     db_session.global_init("db/data.sqlite")
